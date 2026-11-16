@@ -1,20 +1,20 @@
 # AWS S3 Automation Tool
 
-A Python command-line tool to automate file uploads to AWS S3.
+A Python command-line tool that uploads files to an AWS S3 bucket. Instead of clicking through the AWS Console, you run one command and the file is uploaded, with clear success and error messages.
 
 ## Features
 
-- 📤 Upload single files to S3
-- 📁 Command-line interface for easy automation
-- ✅ Error handling and validation
-- 🔄 Reusable for batch operations
+- Upload any file to S3 with a single command
+- Checks that the file exists before uploading
+- Shows a clear message when an upload succeeds or fails
+- Includes a basic version (`s3_upload.py`) and a command-line version (`s3_upload_v2.py`)
 
 ## Prerequisites
 
 - Python 3.6+
-- AWS Account with S3 access
-- boto3 library
-- AWS credentials configured
+- An AWS account and an S3 bucket
+- `boto3` library
+- AWS credentials configured (`aws configure`)
 
 ## Installation
 
@@ -26,7 +26,7 @@ cd s3-automation-tool
 
 2. Install dependencies:
 ```bash
-pip3 install boto3 --break-system-packages
+pip3 install boto3
 ```
 
 3. Configure AWS credentials:
@@ -34,87 +34,55 @@ pip3 install boto3 --break-system-packages
 aws configure
 ```
 
+4. Open `s3_upload_v2.py` and set your own bucket name:
+```python
+bucket_name = 'your-bucket-name'
+```
+
 ## Usage
 
-### Version 1: Basic Upload
-
-Upload a specific file to S3:
+Upload a file:
 ```bash
-python3 s3_upload.py
+python3 s3_upload_v2.py myfile.txt
 ```
 
-### Version 2: CLI Tool (Recommended)
+Sample output:
+```
+Successfully uploaded myfile.txt to your-bucket-name!
+```
 
-Upload any file from command line:
+If the file does not exist:
+```
+Error: File 'myfile.txt' does not exist!
+```
+
+If you use more than one AWS profile, choose one before running the script:
 ```bash
-python3 s3_upload_v2.py <filename>
+export AWS_PROFILE=automation
+python3 s3_upload_v2.py myfile.txt
 ```
 
-**Examples:**
-```bash
-# Upload a text file
-python3 s3_upload_v2.py document.txt
+## Required IAM Permissions
 
-# Upload an image
-python3 s3_upload_v2.py photo.jpg
+The tool only needs these permissions on your bucket, so it works with a least-privilege IAM policy:
 
-# Upload any file
-python3 s3_upload_v2.py data.csv
-```
-
-## Configuration
-
-Edit the bucket name in the script:
-```python
-bucket_name = 'soraya-first-bucket-2025'
-```
+- `s3:PutObject`
+- `s3:GetObject`
+- `s3:ListBucket`
 
 ## How It Works
 
-1. Script reads the file from local filesystem
-2. Connects to AWS S3 using boto3
-3. Uploads file to specified S3 bucket
-4. Provides success/error feedback
+The script uses `boto3` (the AWS SDK for Python) to create an S3 client. It reads the filename from the command line, checks that the file exists locally, then calls `upload_file()` to send it to the bucket. Errors are caught with try/except so the script prints a readable message instead of crashing.
 
 ## Technologies Used
 
-- **Python 3** - Programming language
-- **boto3** - AWS SDK for Python
-- **AWS S3** - Cloud object storage
-
-## Project Structure
-```
-s3-automation-tool/
-├── s3_upload.py       # Basic version
-├── s3_upload_v2.py    # CLI version with arguments
-└── README.md          # Documentation
-```
-
-## Sample Output
-```
-✅ Successfully uploaded document.txt to my-bucket!
-```
-
-## Use Cases
-
-- Automated backups to cloud storage
-- Batch file uploads
-- Integration with other scripts/workflows
-- Cloud storage management
-
-## Author
-
-**Soraya** - Computer Science and Engineering Student
+- **Python 3**
+- **boto3**
+- **AWS S3**
 
 ## Future Improvements
 
-- [ ] Upload entire directories
-- [ ] Progress bars for large files
+- [ ] Upload entire folders
 - [ ] Download files from S3
-- [ ] List bucket contents
-- [ ] Delete files from S3
-- [ ] Sync local folder with S3 bucket
-
-## License
-
-This project is open source and available for educational purposes.
+- [ ] List and delete files in a bucket
+- [ ] Read the bucket name from a command-line argument instead of editing the script
