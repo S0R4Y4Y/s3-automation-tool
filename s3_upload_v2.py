@@ -3,13 +3,13 @@ import sys
 import os
 
 s3 = boto3.client('s3')
-bucket_name = 'soraya-first-bucket-2026'
 
-if len(sys.argv) < 2:
-   print("Usage: python3 s3_upload_v2.py <filename>")
+if len(sys.argv) < 3:
+   print("Usage: python3 s3_upload_v2.py <filename> <bucket-name>")
    sys.exit(1)
 
 file_name = sys.argv[1]
+bucket_name = sys.argv[2]
 
 if not os.path.exists(file_name):
     print(f"Error: File '{file_name}' does not exist!")
